@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.obbang.mapper.member.MemberMapper">
+  	<insert id="memberJoin">
+  		insert into user values(#{user_bno}, #{user_id}, #{user_pw}, #{user_email}, #{user_sex},#{user_phone},#{user_name},#{user_year},#{user_month},#{user_day},#{user_address1},#{user_address2},#{user_address3},1  )
+
+  	</insert>
+  	<!-- 아이디 중복검사 -->
+  	<select id="idCheck" resultType="int">
+  	
+  		select count(*) from user where user_id = #{user_id}
+  	
+  	</select>
+  	
+  	 <!-- 로그인 -->
+      <select id="memberLogin" resultType="com.obbang.model.member.MemberVO">
+      
+         SELECT * FROM user WHERE user_id = #{user_id} AND user_pw = #{user_pw};
+      
+      </select>
+      
+        <!-- 회원 목록 -->
+        <select id="getList" resultType="com.obbang.model.member.MemberVO">
+    
+        select * from user
+    
+    </select>
+    
+     <!-- 회원 조회 -->
+    <select id="getMember" resultType="com.obbang.model.member.MemberVO">
+    
+        select * from user where user_bno = #{user_bno}
+    
+    </select>
+    
+     <update id="modify">
+        <!-- MySQL -->
+        update user set user_pw = #{user_pw}, user_email = #{user_email}, user_phone = #{user_phone}, user_name = #{user_name} where user_bno = #{user_bno}
+        
+    </update>
+   <!-- 게시판 삭제 -->
+    <delete id="delete">
+    
+        delete from user where user_bno = #{user_bno}
+    
+    </delete>
+ 	
+ 	<select id="memberIdSearch" parameterType="com.obbang.model.member.MemberVO" resultType="com.obbang.model.member.MemberVO">
+<![CDATA[
+    select
+        *
+    from
+        user
+    where
+        user_name = #{user_name}
+    and
+        user_phone = #{user_phone}
+]]>    
+</select>
+
+<select id="memberPwSearch" parameterType="com.obbang.model.member.MemberVO" resultType="com.obbang.model.member.MemberVO">
+<![CDATA[
+    select
+        *
+    from
+        user
+    where
+        user_id = #{user_id}
+    and
+        user_name = #{user_name}
+     and
+        user_phone = #{user_phone}
+]]>    
+</select>
+      
+      <!-- 주문자 정보 -->
+  	<select id="getMemberInfo" resultType="com.obbang.model.member.MemberVO">
+  	
+  		SELECT user_id, user_name, user_email, user_address1, user_address2, user_address3
+  		FROM user 
+  		WHERE user_id = #{user_id}
+  	
+  	</select>
+  	
+  	
+  </mapper>

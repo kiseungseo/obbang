@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.obbang.mapper.reply.ReplyMapper">
+
+	<!-- 점포 댓글등록 -->
+  	<insert id="enrollReply">
+  	
+  		insert into store_reply(store_id, user_id, content, rating) values(#{store_id}, #{user_id}, #{content}, #{rating})
+  	
+  	</insert>
+  	<select id="checkReply" resultType="integer">
+	
+		select reply_id from store_reply 
+		where user_id = #{user_id} and store_id = #{store_id}
+	
+	</select>
+	
+		<!-- 댓글 페이징 -->
+  	<select id="getReplyList" resultType="com.obbang.model.reply.ReplyDTO">
+		  		
+		select reply_id, store_id, user_id, content, rating, regDate
+		from store_reply
+		where store_id = #{store_id}
+		order by regDate desc  		
+  		limit #{skip}, #{amount}
+  		
+  	</select>
+  	
+  	<select id="getReplyTotal" resultType="int">
+  	
+  		select count(*)
+  		from store_reply
+  		where store_id = #{store_id}
+  	
+  	</select>
+  		<!-- 댓글수정 -->
+  	<update id="updateReply">
+  	
+  		update store_reply set content = #{content}, rating = #{rating}
+  		where reply_id = #{reply_id}
+  		
+  	</update>
+  		<select id="getUpdateReply" resultType="com.obbang.model.reply.ReplyDTO">
+	
+		select * from store_reply
+		where reply_id = #{reply_id}
+		
+	</select>
+		<!-- 댓글 삭제 -->
+  	<delete id="deleteReply">
+  	
+  		DELETE FROM store_reply
+  		WHERE reply_id = #{reply_id}
+  		
+  	</delete>
+  		<select id="getRatingAverage" resultType="double">
+  	
+  		select avg(rating)
+  		from store_reply
+  		where store_id = #{store_id}
+  	
+  	</select>
+
+	<update id="updateRating">
+	
+		update store
+		set ratingAvg = #{ratingAvg}
+		where store_id = #{store_id}
+	
+	</update>
+</mapper>

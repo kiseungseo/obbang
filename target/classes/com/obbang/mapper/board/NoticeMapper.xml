@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.obbang.mapper.board.NoticeMapper">
+ 	 
+    <sql id="criteria">
+        <trim prefix="where (" suffix=")" prefixOverrides="OR">
+            <foreach collection="typeArr" item="type">
+                <trim prefix="OR">
+                    <choose>
+                        <when test="type == 'T'.toString()">
+                            notice_title like concat('%',#{keyword},'%') 
+                        </when>
+                        <when test="type == 'C'.toString()">
+                            notice_content like concat('%',#{keyword},'%') 
+                        </when>
+                    </choose>
+                </trim>
+            </foreach>
+        </trim>
+    
+    </sql>
+ 	 <!-- 게시판 등록 -->
+    <insert id="enroll">
+        
+        insert into notice(notice_title, notice_content, notice_writer, notice_image) values (#{notice_title}, #{notice_content}, #{notice_writer}, #{notice_image})
+        
+    </insert>
+    <!-- 게시판 목록 -->
+    <select id="getList" resultType="com.obbang.model.board.NoticeDTO">
+    
+        select * from notice
+    
+    </select>
+     
+     <!-- 게시판 조회 -->
+    <select id="getPage" resultType="com.obbang.model.board.NoticeDTO">
+    
+        select * from notice where notice_nno = #{notice_nno}
+    
+    </select>
+    
+    <!-- 게시판 수정 -->
+    <update id="modify">
+     
+        update notice set notice_title = #{notice_title}, notice_content = #{notice_content}, notice_image = #{notice_image} where notice_nno = #{notice_nno}
+     
+    </update>
+ 
+ 
+     <!-- 게시판 삭제 -->
+    <delete id="delete">
+    
+        delete from notice where notice_nno = #{notice_nno}
+        
+    
+    </delete>
+   <!-- 게시물 목록(페이징) -->
+    <select id="getListPaging" resultType="com.obbang.model.board.NoticeDTO">
+    
+        select * from (
+                select notice_nno, notice_title, notice_writer, notice_regdate  
+                from notice 
+                <if test="keyword != null">
+                    <include refid="criteria"></include>
+                </if>
+                order by notice_nno desc) as T1
+        limit #{skip},#{amount}
+    
+    </select>
+    
+   <!-- 게시물 총 갯수  -->
+    <select id="getTotal" resultType="int">
+    
+        select count(*) from notice
+        
+        <if test="keyword != null">
+            <include refid="criteria"></include>
+        </if>    
+    
+    </select>    
+    
+ 
+    
+    
+  </mapper>

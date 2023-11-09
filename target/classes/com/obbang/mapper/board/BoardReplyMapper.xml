@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.obbang.mapper.board.BoardReplyMapper">
+	
+<!-- 댓글 조회 -->
+<select id="list" parameterType="int" resultType="com.obbang.model.board.BoardReplyDTO">
+	select
+		reply_rno,board_bno,user_id, user_replyname, reply_content, reply_regDate
+	from reply
+		where board_bno = #{board_bno}		
+</select>
+
+<!-- 댓글 작성 -->
+<insert id="write" parameterType="com.obbang.model.board.BoardReplyDTO">
+	insert into reply(board_bno, user_id, reply_content, reply_regDate, user_replyname)
+		value(#{board_bno}, #{user_id}, #{reply_content},now(), #{user_replyname})
+</insert>
+	
+<!-- 댓글 하나 상세 조회 -->
+<select id="getUpdate" parameterType="int" resultType="com.obbang.model.board.BoardReplyDTO">
+	select * from reply where reply_rno = #{reply_rno}		
+</select>
+<!-- 댓글 수정 -->
+<update id="modify" parameterType="com.obbang.model.board.BoardReplyDTO">
+	update reply set
+		reply_content = #{reply_content}
+	where reply_rno = #{reply_rno}
+</update>
+
+<!-- 댓글 삭제 -->
+<delete id="delete" parameterType="com.obbang.model.board.BoardReplyDTO">
+	delete from reply
+	where reply_rno = #{reply_rno}
+</delete>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.obbang.mapper.image.ImageMapper">
+<select id="storeGetImageList" resultType="com.obbang.model.image.ImageVO">
+	
+		select * from images_store where store_id = #{store_id}
+	
+	</select>
+<select id="menuGetImageList" resultType="com.obbang.model.image.ImageVO">
+	
+		select * from images_menu where menu_id = #{menu_id}
+	
+	</select>
+</mapper>

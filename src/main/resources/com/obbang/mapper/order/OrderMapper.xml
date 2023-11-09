@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.obbang.mapper.order.OrderMapper">
+
+<!-- 주문 상품 정보 -->
+	<select id="getMenuInfo" resultType="com.obbang.model.order.OrderPageItemDTO">
+	
+		select menu_id, menu_menu, menu_price,menu_info
+		from menu where menu_id = #{menu_id}	
+	
+	</select>
+	<select id="getOrderInfo" resultType="com.obbang.model.order.OrderItemDTO">
+	
+		select menu_id, menu_price
+		from menu where menu_id = #{menu_id}
+	
+	</select>
+	<!-- 주문 테이블 등록 -->
+	<insert id="enrollOrder">
+	
+		insert into bbang_order(order_id, order_adress, user_id, user_address1, user_address2, user_address3, order_State, deliveryCost, usePoint)
+    	values(#{order_id},#{order_adress}, #{user_id}, #{user_address1}, #{user_address2}, #{user_address3}, '배송준비', #{deliveryCost}, #{usePoint})
+	
+	</insert>
+	<!-- 주문 아이템 테이블 등록 -->
+	<insert id="enrollOrderItem">
+	
+		insert into bbang_orderItem(order_id, menu_id, menuCount, menu_price, menuDiscount, savePoint)
+		values(#{order_id}, #{menu_id}, #{menuCount}, #{menu_price}, #{menuDiscount}, #{savePoint})
+	
+	</insert>
+	<!-- 주문 금액 차감 -->
+	<update id="deductMoney">
+	
+		update user set money = #{money}, point = #{point} where user_id = #{user_id}
+		
+	</update>
+	<!-- 주문 재고 차감 -->
+	<update id="deductStock">
+	
+		update menu set menuStock = #{menuStock} where menu_id = #{menu_id}
+	
+	</update>
+	<!-- 주문취소 -->
+	<update id="orderCancle">
+		update bbang_order set order_State = '주문취소' where order_id = #{order_id}
+	</update>	
+
+	<!-- 주문 상품 정보(주문취소) -->
+	<select id="getOrderItemInfo" resultType="com.obbang.model.order.OrderItemDTO">
+	
+		select * from bbang_orderitem
+		where order_id = #{order_id}
+	
+	</select>
+	
+	<!-- 주문 정보(주문 취소) -->
+	<select id="getOrder" resultType="com.obbang.model.order.OrderDTO">
+	
+		select * from bbang_order
+		where order_id = #{order_id}
+	
+	</select>
+	<!-- 주문 정보(주문 취소) -->
+	<select id="getOrderDetail" resultType="com.obbang.model.order.OrderDTO">
+	
+		select * from bbang_order
+		where user_id = #{user_id}
+		<if test="keyword != null">
+		and user_id like CONCAT ('%', #{keyword}, '%')
+		</if>
+		order by orderDate DESC 
+		limit #{skip}, #{amount}
+	</select>
+	<!-- 상품 총 개수 -->
+	<select id="getOrderTotal" resultType="int">
+	
+		select count(*) from bbang_order where user_id =  #{user_id}
+		
+	    <if test="keyword != null">
+	    	and user_id like CONCAT('%',#{keyword}, '%')
+	    </if>
+	
+	</select>
+</mapper>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.obbang.mapper.admin.AdminMapper">
+	<!-- 점포 등록 -->
+  	<insert id="storeEnroll">
+  		<selectKey resultType="int" keyProperty="store_id" order="AFTER">
+  		
+  			SELECT LAST_INSERT_ID();
+  		
+  		</selectKey>
+  		insert into store(store_store,store_adress,store_tel,store_info,store_category)
+		values(#{store_store},#{store_adress}, #{store_tel},#{store_info},#{store_category});
+		
+  	</insert>
+  	<!-- 점포 등록 -->
+  	<insert id="menuEnroll">
+  	<selectKey resultType="int" keyProperty="menu_id" order="AFTER">
+  		
+  			SELECT LAST_INSERT_ID();
+  		
+  		</selectKey>
+  		insert into menu(store_store,menu_menu,menu_price,menu_info)
+		values(#{store_store},#{menu_menu}, #{menu_price},#{menu_info})
+
+  	</insert>
+  	<!-- MySQL -->    
+	<!-- 점포 정보 수정 -->
+	<update id="storeModify">
+		update store set store_store = #{store_store}, store_adress = #{store_adress}, store_tel = #{store_tel}, store_info = #{store_info}, store_category = '${store_category}'
+		where store_id = ${store_id}
+		
+	</update>
+  	<!-- MySQL -->    
+	<!-- 상품 정보 수정 -->
+	<update id="menuModify">
+		update menu set menu_menu = #{menu_menu}, menu_price = #{menu_price}, menu_info = #{menu_info}
+		where menu_id = ${menu_id}
+		
+	</update>
+	<!-- 점포 정보 삭제 -->
+	<delete id="storeDelete">
+	
+		delete from store where store_id = #{store_id}
+	
+	</delete>
+	<!-- 상품 정보 삭제 -->
+	<delete id="menuDelete">
+	
+		delete from menu where menu_id = #{menu_id}
+	
+	</delete>
+	<!-- 이미지 등록 -->
+	<insert id="storeImageEnroll">
+		insert into images_store(store_id, fileName, uploadPath, uuid) values (#{store_id}, #{fileName}, #{uploadPath}, #{uuid});
+		
+	</insert>
+	<!-- 이미지 등록 -->
+	<insert id="storeLogoImageEnroll">
+		insert into images_logo(store_id, fileName, uploadPath, uuid) values (#{store_id}, #{fileName}, #{uploadPath}, #{uuid});
+		
+	</insert>
+	<!-- 이미지 등록 -->
+	<insert id="menuImageEnroll">
+		insert into images_menu(menu_id, fileName, uploadPath, uuid) values (#{menu_id}, #{fileName}, #{uploadPath}, #{uuid});
+		
+	</insert>
+	<!-- 지정 점포 이미지 전체 삭제 --> 
+	<delete id="storeDeleteImageAll">
+	
+		delete FROM images_store where store_id = #{store_id};
+		
+	
+	</delete>
+	<!-- 지정 상품 이미지 전체 삭제 --> 
+	<delete id="menuDeleteImageAll">
+	
+		delete FROM images_menu where menu_id = #{menu_id};
+		
+	
+	</delete>
+
+	
+	<!-- 주문 리스트 -->
+	<select id="getOrderList" resultType="com.obbang.model.order.OrderDTO">	
+			
+			select order_id, user_id, order_state, orderDate
+		    from bbang_order 
+		    <if test="keyword != null">
+		    	where user_id like CONCAT('%',#{keyword}, '%')
+		    </if>
+		    order by orderDate DESC
+		    limit #{skip}, #{amount}
+		    
+	</select>	
+	
+	<!-- 상품 총 개수 -->
+	<select id="getOrderTotal" resultType="int">
+	
+		select count(*) from bbang_order
+		
+	    <if test="keyword != null">
+	    	where user_id like CONCAT('%',#{keyword}, '%')
+	    </if>
+	
+	</select>
+	<!-- MySQL -->
+	<!-- 어제자 날자 이미지 리스트 -->
+	<select id="storeCheckFileList" resultType="com.obbang.model.image.ImageVO">
+	
+		select * from images_store where uploadpath = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -1 DAY), '%Y\%m\%d')	
+	
+	</select>
+	<!-- MySQL -->
+	<!-- 어제자 날자 이미지 리스트 -->
+	<select id="menuCheckFileList" resultType="com.obbang.model.image.ImageVO">
+	
+		select * from images_menu where uploadpath = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -1 DAY), '%Y\%m\%d')	
+	
+	</select>
+	<!-- 지정 상품 이미지 정보 얻기 -->
+	<select id="getStoreInfo" resultType="com.obbang.model.image.ImageVO">
+	
+		select * from images_store where store_id = #{store_id}
+	
+	</select>
+	<!-- 지정 상품 이미지 정보 얻기 -->
+	<select id="getMenuInfo" resultType="com.obbang.model.image.ImageVO">
+	
+		select * from images_menu where menu_id = #{menu_id}
+	
+	</select>
+</mapper>

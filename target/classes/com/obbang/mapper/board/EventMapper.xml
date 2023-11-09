@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.obbang.mapper.board.EventMapper">
+ 
+     <!-- 게시판 등록 -->
+    <insert id="enroll">
+        
+        insert into event(event_title, event_content, event_image) values (#{event_title}, #{event_content}, #{event_image})
+        
+    </insert>
+    <!-- 게시판 목록 -->
+    <select id="getList" resultType="com.obbang.model.board.EventDTO">
+    
+        select * from event
+    
+    </select>
+     
+     <!-- 게시판 조회 -->
+    <select id="getPage" resultType="com.obbang.model.board.EventDTO">
+    
+        select * from event where event_eno = #{event_eno}
+    
+    </select>
+    
+    <!-- 게시판 수정 -->
+    <update id="modify">
+    
+        update event set event_title = #{event_title}, event_content = #{event_content}, event_image = #{event_image} where event_eno = #{event_eno}
+
+    </update>
+ 
+ 
+     <!-- 게시판 삭제 -->
+    <delete id="delete">
+    
+        delete from event where event_eno = #{event_eno}
+        
+    </delete>
+  
+     <!-- 게시물 목록(페이징) -->
+    <select id="getListPaging" resultType="com.obbang.model.board.EventDTO">
+    
+        select * from (
+                select event_eno, event_title, event_regdate,event_content, event_image
+                from event order by event_eno desc) as T1 
+        limit #{event_skip},#{event_amount}
+    
+    </select>
+  	<!-- 게시물 총 개숫 -->
+    <select id="getTotal" resultType="int">
+    
+        select count(*) from event
+        
+     
+    </select>    
+    
+    
+    
+    
+    
+    
+    
+    
+</mapper>

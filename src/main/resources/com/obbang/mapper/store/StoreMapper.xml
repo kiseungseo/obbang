@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.obbang.mapper.store.StoreMapper">
+<!-- 점포,상품 리스트 -->
+<select id="StoreGetList" resultType="com.obbang.model.store.StoreVO">
+	
+		select  store_id, store_store,  store_adress, store_tel, store_info, store_category,ratingAvg
+		from store where store_category = '${store_category}'
+		<if test="keyword != null">
+		and (store_store like CONCAT ('%', #{keyword}, '%'))
+		</if>
+		order by store_id DESC 
+		limit #{skip}, #{amount}		
+	
+	</select>
+	<!-- 점포,상품 관리자리스트 -->
+<select id="StoreGetListAdmin" resultType="com.obbang.model.store.StoreVO">
+	
+		select  store_id, store_store,  store_adress, store_tel, store_info, store_category
+		from store
+		<if test="keyword != null">
+		where (store_id like CONCAT ('%', #{keyword}, '%'))
+		</if>
+		order by store_id DESC 
+		limit #{skip}, #{amount}		
+	
+	</select>
+	<!-- 점포 총 개수 -->
+  	<select id="StoreGetTotal" resultType="int">
+  	
+  		select count(*) from store where store_category = '${store_category}'
+  		
+  		<if test="keyword != null">
+  		
+  			and store_category like '%' || #{keyword} || '%'
+  		</if>
+  		
+  	</select> 
+  	<!-- 점포 총 개수 -->
+  	<select id="StoreGetTotaladmin" resultType="int">
+  	
+  		select count(*) from store
+  		
+  		<if test="keyword != null">
+  		
+  			where store_store like '%' || #{keyword} || '%'
+  		</if>
+  		
+  	</select> 
+  	<!-- 점포 총 개수 -->
+  	<select id="StoreGetTotalMenu" resultType="int">
+  	
+  		select count(*) from menu
+  		
+  		<if test="keyword != null">
+  		
+  			where menu_menu like '%' || #{keyword} || '%'
+  		</if>
+  		
+  	</select> 
+  	<!-- 점포 조회 페이지 -->
+	<select id="StoreGetDetail" resultType="com.obbang.model.store.StoreVO">
+	
+		select *
+		from store where store_id = ${store_id};
+	
+	</select>
+  	<!-- 상품 조회 페이지 -->
+	<select id="menuGetDetail" resultType="com.obbang.model.store.StoreVO">
+	
+		select * from menu where menu_id = ${menu_id};
+	
+	</select>
+	<!-- 점포 조회 페이지 -->
+	<select id="storeGet" resultType="com.obbang.model.store.StoreVO">
+	
+		select store_id, store_store, store_adress, store_tel, store_info, store_category,menu_id,menu_menu,menu_price
+		from store natural join menu where store_id = ${store_id};
+	
+	</select>
+	<!-- 카테고리 -->
+	<select id="categoryGet" resultType="com.obbang.model.store.StoreVO">
+		select * from category
+	</select>
+	<!-- 메뉴 -->
+	<select id="menuGet" resultType="com.obbang.model.store.StoreVO">
+		select * from menu 
+		<if test="keyword != null">
+		where (menu_menu like CONCAT ('%', #{keyword}, '%'))
+		</if>
+		order by menu_id DESC 
+		limit #{skip}, #{amount}
+	</select>
+	<!-- 상품id 이름 -->
+	<select id="getStoreIdName" resultType="com.obbang.model.store.StoreVO">
+	
+		select store_id, store_store from store 
+		where store_id = #{store_id}
+	
+	
+	</select>
+	<select id="menuGetimage" resultType="com.obbang.model.store.StoreVO">
+		select * from menu where menu_id = ${menu_id}
+		<if test="keyword != null">
+		and (menu_menu like CONCAT ('%', #{keyword}, '%'))
+		</if>
+		order by menu_id DESC 
+		limit #{skip}, #{amount}
+	</select>
+	<!-- 점포 조회 페이지 -->
+	<select id="StoreGetimage" resultType="com.obbang.model.store.StoreVO">
+	
+		select * from store where store_id = ${store_id};
+	
+	</select>
+</mapper>
